@@ -8,64 +8,38 @@ import (
 
 func TestGet(t *testing.T) {
 	assert := assert.New(t)
-	array := NewArray(20)
+	list := NewList(20)
 
 	var i, num int
 	var err error
 
+	// 测试index是否越界
 	i = -1
-	_, err = array.Get(i)
+	_, err = list.Get(i)
+	assert.NotNil(err)
+	i = 11
+	_, err = list.Get(i)
 	assert.NotNil(err)
 
-	i = 30
-	_, err = array.Get(i)
-	assert.NotNil(err)
-
+	// 测试获取第10个元素
 	i = 10
-	num, err = array.Get(i)
+	num, err = list.Get(i)
 	assert.Nil(err)
 	assert.Equal(10, num)
-}
 
-func TestAdd(t *testing.T) {
-	assert := assert.New(t)
-	array := NewArray(20)
-
-	var i, num int
-	var err error
-
-	i = 21
-	num, err = array.Add(i)
-	assert.Nil(err)
-	_ = num
-}
-
-func TestDelete(t *testing.T) {
-	assert := assert.New(t)
-	array := NewArray(20)
-
-	var i, num int
-	var err error
-
+	// 测试删除第10个元素
 	i = 10
-	num, err = array.Delete(i)
+	num, err = list.Delete(i)
 	assert.Nil(err)
 	assert.Equal(10, num)
-	assert.NotEqual(10, array[9])
-	// 下面的断言是不通过的，因为len(array) == 20 这是为什么啊
-	// assert.Equal(19, len(array))
-}
+	assert.Equal(9, list.Length)
+	assert.NotEqual(10, list.List[8])
 
-func TestInsert(t *testing.T) {
-	assert := assert.New(t)
-	array := NewArray(20)
-
-	var i, j, num int
-	var err error
-
-	i = 10
-	j = 30
-	num, err = array.Insert(i, j)
+	// 测试插入第10个元素
+	i = 9
+	j := 30
+	num, err = list.Insert(i, j)
 	assert.Nil(err)
 	assert.Equal(j, num)
+	assert.Equal(10, list.Length)
 }

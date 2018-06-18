@@ -2,69 +2,61 @@ package main
 
 import "fmt"
 
-type Array interface {
-	Get(i int) (int, error)
-	Add(i int) (int, error)
-	Delete(i int) (int, error)
-	Insert(i, j int) (int, error)
-	Length() int
+type LineOrderList struct {
+	MaxSize int
+	Length  int
+	List    Elem
 }
 
-type MyArray []int
+type Elem []int
 
-func NewArray(maxSize int) MyArray {
-	var array = make(MyArray, 20)
-	var j int = 1
-
-	for i := 0; i < maxSize; i++ {
-		array[i] = j
-		j++
+func NewList(maxSize int) *LineOrderList {
+	var elem = make(Elem, 0, 20)
+	for i := 1; i <= maxSize/2; i++ {
+		elem = append(elem, i)
 	}
 
-	return array
+	return &LineOrderList{
+		MaxSize: maxSize,
+		Length:  len(elem),
+		List:    elem,
+	}
 }
 
-func (l MyArray) Get(i int) (int, error) {
-	if i < 1 || i > len(l) {
-		return 0, fmt.Errorf("the location should greater than zero and less than maxSize")
+func (l *LineOrderList) Get(i int) (int, error) {
+	if i < 1 || i > l.Length {
+		return 0, fmt.Errorf("the index should greater than zero and less than list's length")
 	}
 
-	return l[i-1], nil
+	return l.List[i-1], nil
 }
 
-func (l MyArray) Add(i int) (int, error) {
-	l = append(l, i)
-
-	return len(l), nil
-}
-
-func (l MyArray) Delete(i int) (int, error) {
-	if i < 1 || i > len(l) {
-		return 0, fmt.Errorf("the location should greater than zero and less than maxSize")
+func (l *LineOrderList) Delete(i int) (int, error) {
+	if i < 1 || i > l.Length {
+		return 0, fmt.Errorf("the index should greater than zero and less than list's length")
 	}
 
-	val := l[i-1]
-	copy(l[i-1:], l[i:])
-	l = l[:len(l)-1]
+	val := l.List[i-1]
+	copy(l.List[i-1:], l.List[i:])
+	l.List = l.List[:len(l.List)-1]
+	l.Length = len(l.List)
 
 	return val, nil
 }
 
-func (l MyArray) Insert(i, j int) (int, error) {
-	if i < 1 || i > len(l) {
-		return 0, fmt.Errorf("the location should greater than zero and less than maxSize")
+func (l *LineOrderList) Insert(i, j int) (int, error) {
+	if i < 1 || i > l.Length {
+		return 0, fmt.Errorf("the index should greater than zero and less than list's length")
 	}
 
 	// 将第i个位置及其后面的内容放入临时切片
-	tmpSlice := append(MyArray{}, l[i-1:]...)
+	tmpSlice := append(Elem{}, l.List[i-1:]...)
 	// 第i个位置插入元素
-	newSlice := append(l[:i-1], j)
+	newSlice := append(l.List[:i-1], j)
 	// 将临时切片追加到新的切片即可
 	newSlice = append(newSlice, tmpSlice...)
+	l.List = newSlice
+	l.Length = len(newSlice)
 
 	return newSlice[i-1], nil
-}
-
-func (l MyArray) Length() int {
-	return len(l)
 }
