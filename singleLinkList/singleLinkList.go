@@ -12,7 +12,6 @@ type Node struct {
 type SingleLinkList struct {
 	Length int
 	Head   *Node
-	Tail   *Node
 }
 
 func NewSingleLinkList() *SingleLinkList {
@@ -23,20 +22,25 @@ func NewSingleLinkList() *SingleLinkList {
 	return &SingleLinkList{
 		Length: 0,
 		Head:   node,
-		Tail:   node,
 	}
 }
 
-func (l *SingleLinkList) Append(e DataType) (DataType, error) {
-	node := &Node{
-		Data: i,
+func (l *SingleLinkList) Append(e DataType) error {
+	newNode := &Node{
+		Data: e,
 	}
 
-	l.Tail.Next = nil
-	if l.Length == 0 {
+	node := l.Head
+	for j := 0; j < l.Length; j++ {
+		node = node.Next
+	}
+	if node.Next == nil {
+		node.Next = newNode
 	}
 
-	l.Tail = node
+	l.Length++
+
+	return nil
 }
 
 func (l *SingleLinkList) Get(i int) (*Node, error) {
@@ -45,7 +49,7 @@ func (l *SingleLinkList) Get(i int) (*Node, error) {
 	}
 
 	node := l.Head
-	for j := 1; j < i; j++ {
+	for j := 0; j < i; j++ {
 		node = node.Next
 	}
 
@@ -63,13 +67,13 @@ func (l *SingleLinkList) Insert(i int, e DataType) error {
 	}
 
 	node := l.Head
-	for j := 1; j < i; j++ {
+	for j := 0; j < i-1; j++ {
 		node = node.Next
 	}
 	newNode.Next = node.Next
 	node.Next = newNode
 
-	l.Length += 1
+	l.Length++
 
 	return nil
 }
