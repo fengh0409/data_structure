@@ -14,6 +14,7 @@ type SingleLinkList struct {
 	Head   *Node
 }
 
+// 初始化，头结点不存储数据
 func NewSingleLinkList() *SingleLinkList {
 	node := &Node{
 		Next: nil,
@@ -34,9 +35,7 @@ func (l *SingleLinkList) Append(e DataType) error {
 	for j := 0; j < l.Length; j++ {
 		node = node.Next
 	}
-	if node.Next == nil {
-		node.Next = newNode
-	}
+	node.Next = newNode
 
 	l.Length++
 
@@ -67,6 +66,7 @@ func (l *SingleLinkList) Insert(i int, e DataType) error {
 	}
 
 	node := l.Head
+	// 获取第i-1个节点
 	for j := 0; j < i-1; j++ {
 		node = node.Next
 	}
@@ -78,8 +78,21 @@ func (l *SingleLinkList) Insert(i int, e DataType) error {
 	return nil
 }
 
-func (l *SingleLinkList) Delete(i int) (DataType, error) {
+func (l *SingleLinkList) Delete(i int) error {
+	if err := checkIndex(i); err != nil {
+		return err
+	}
 
+	node := l.Head
+	for j := 1; j < i; j++ {
+		node = node.Next
+	}
+	if node.Next == nil {
+	}
+	node.Next = node.Next.Next
+	l.Length--
+
+	return nil
 }
 
 func (l *SingleLinkList) checkIndex(i int) error {
