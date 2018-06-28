@@ -2,10 +2,8 @@ package singleLinkList
 
 import "fmt"
 
-type DataType int
-
 type Node struct {
-	Data DataType
+	Data int
 	Next *Node
 }
 
@@ -26,7 +24,7 @@ func NewSingleLinkList() *SingleLinkList {
 	}
 }
 
-func (l *SingleLinkList) Append(e DataType) error {
+func (l *SingleLinkList) Append(e int) error {
 	newNode := &Node{
 		Data: e,
 	}
@@ -43,7 +41,7 @@ func (l *SingleLinkList) Append(e DataType) error {
 }
 
 func (l *SingleLinkList) Get(i int) (*Node, error) {
-	if err := checkIndex(i); err != nil {
+	if err := l.checkIndex(i); err != nil {
 		return nil, err
 	}
 
@@ -56,8 +54,8 @@ func (l *SingleLinkList) Get(i int) (*Node, error) {
 
 }
 
-func (l *SingleLinkList) Insert(i int, e DataType) error {
-	if err := checkIndex(i); err != nil {
+func (l *SingleLinkList) Insert(i int, e int) error {
+	if err := l.checkIndex(i); err != nil {
 		return err
 	}
 
@@ -70,6 +68,7 @@ func (l *SingleLinkList) Insert(i int, e DataType) error {
 	for j := 0; j < i-1; j++ {
 		node = node.Next
 	}
+	// 以下赋值顺序不能弄反
 	newNode.Next = node.Next
 	node.Next = newNode
 
@@ -79,17 +78,20 @@ func (l *SingleLinkList) Insert(i int, e DataType) error {
 }
 
 func (l *SingleLinkList) Delete(i int) error {
-	if err := checkIndex(i); err != nil {
+	if err := l.checkIndex(i); err != nil {
 		return err
 	}
 
 	node := l.Head
-	for j := 1; j < i; j++ {
+	for j := 0; j < i-1; j++ {
 		node = node.Next
 	}
-	if node.Next == nil {
+	// i==l.Length 删除最后一个元素
+	if i == l.Length {
+		node.Next = nil
+	} else {
+		node.Next = node.Next.Next
 	}
-	node.Next = node.Next.Next
 	l.Length--
 
 	return nil
@@ -99,4 +101,6 @@ func (l *SingleLinkList) checkIndex(i int) error {
 	if i < 1 || i > l.Length {
 		return fmt.Errorf("the index is invalid")
 	}
+
+	return nil
 }

@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestGet(t *testing.T) {
+func TestOrderList(t *testing.T) {
 	assert := assert.New(t)
 	list := NewList(20)
 
