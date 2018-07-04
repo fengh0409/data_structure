@@ -12,28 +12,35 @@ type DoubleLinkList struct {
 }
 
 func NewDoubleLinkList() *DoubleLinkList {
+	node := &Node{
+		Prev: nil,
+		Next: nil,
+	}
 	return &DoubleLinkList{
 		Length: 0,
-		Head:   nil,
+		Head:   node,
 	}
 }
 
 func (l *DoubleLinkList) Append(e int) error {
-	var prev, next *Node
-	if l.Length == 0 {
-		prev = nil
-		next = nil
-	} else {
-		prev = l.Head.Prev
-		next = l.Head.Next
+	firstNode := l.Head.Next
+	lastNode := l.Head.Prev
+
+	// 先解决新节点的前驱和后继节点
+	newNode := &Node{
+		Data: e,
+		Prev: lastNode,
+		Next: firstNode,
 	}
 
-	node := &Node{
-		Data: e,
-		Prev: prev,
-		Next: next,
+	if l.Length == 0 {
+		l.Head.Prev = newNode
+		l.Head.Next = newNode
+	} else {
+		lastNode.Next = newNode
+		l.Head.Prev = newNode
 	}
-	l.Head.Prev = node
+
 	l.Length++
 
 	return nil
