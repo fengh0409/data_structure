@@ -1,5 +1,7 @@
 package doubleLinkList
 
+import "fmt"
+
 type Node struct {
 	Data int
 	Prev *Node
@@ -46,14 +48,58 @@ func (l *DoubleLinkList) Append(e int) error {
 	return nil
 }
 
-func (l *DoubleLinkList) Get(i int) {
+func (l *DoubleLinkList) Get(i int) (*Node, error) {
+	if err := checkIndex(i); err != nil {
+		return nil, err
+	}
+
+	// 最后一个节点
+	if i == l.Length {
+		return l.Head.Prev, nil
+	}
+
+	node := l.Head
+	for j := 0; j < i; j++ {
+		node = node.Next
+	}
+
+	return node, nil
 }
 
-func (l *DoubleLinkList) GetLast(i int) {
+func (l *DoubleLinkList) Insert(i int, e int) error {
+	if err := checkIndex(i); err != nil {
+		return err
+	}
+
+	newNode := &Node{
+		Data: e,
+	}
+
+	if i == 1 {
+
+	}
+	node := l.Head
+	for j := 0; j < i; j++ {
+		node = node.Next
+	}
+
+	newNode.Prev = node.Prev
+	newNode.Next = node
+	node.Prev.Next = newNode
+	node.Prev = newNode
+
+	l.Length++
+
+	return nil
 }
 
-func (l *DoubleLinkList) Insert(i int, e int) {
+func (l *DoubleLinkList) Delete(i int) error {
 }
 
-func (l *DoubleLinkList) Delete(i int) {
+func (l *DoubleLinkList) checkIndex(i int) error {
+	if i < 1 || i > l.Length {
+		return fmt.Errorf("the index is invalid")
+	}
+
+	return nil
 }
