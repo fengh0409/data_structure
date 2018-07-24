@@ -86,12 +86,7 @@ func (l *SingleLinkList) Delete(i int) error {
 	for j := 0; j < i-1; j++ {
 		node = node.Next
 	}
-	// i==l.Length 删除最后一个元素
-	if i == l.Length {
-		node.Next = nil
-	} else {
-		node.Next = node.Next.Next
-	}
+	node.Next = node.Next.Next
 	l.Length--
 
 	return nil

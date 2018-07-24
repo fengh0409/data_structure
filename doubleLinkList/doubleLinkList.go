@@ -11,6 +11,7 @@ type Node struct {
 type DoubleLinkList struct {
 	Length int
 	Head   *Node
+	Tail   *Node
 }
 
 func NewDoubleLinkList() *DoubleLinkList {
@@ -18,30 +19,30 @@ func NewDoubleLinkList() *DoubleLinkList {
 		Prev: nil,
 		Next: nil,
 	}
+
 	return &DoubleLinkList{
 		Length: 0,
 		Head:   node,
+		Tail:   node,
 	}
 }
 
 func (l *DoubleLinkList) Append(e int) error {
-	firstNode := l.Head.Next
-	lastNode := l.Head.Prev
 
-	// 先解决新节点的前驱和后继节点
 	newNode := &Node{
 		Data: e,
-		Prev: lastNode,
-		Next: firstNode,
+		Next: nil,
 	}
 
+	// Head节点不存储元素
 	if l.Length == 0 {
-		l.Head.Prev = newNode
+		newNode.Prev = nil
 		l.Head.Next = newNode
 	} else {
-		lastNode.Next = newNode
-		l.Head.Prev = newNode
+		newNode.Prev = l.Tail
+		l.Tail.Next = newNode
 	}
+	l.Tail = newNode
 
 	l.Length++
 
@@ -49,13 +50,8 @@ func (l *DoubleLinkList) Append(e int) error {
 }
 
 func (l *DoubleLinkList) Get(i int) (*Node, error) {
-	if err := checkIndex(i); err != nil {
+	if err := l.checkIndex(i); err != nil {
 		return nil, err
-	}
-
-	// 最后一个节点
-	if i == l.Length {
-		return l.Head.Prev, nil
 	}
 
 	node := l.Head
@@ -67,7 +63,7 @@ func (l *DoubleLinkList) Get(i int) (*Node, error) {
 }
 
 func (l *DoubleLinkList) Insert(i int, e int) error {
-	if err := checkIndex(i); err != nil {
+	if err := l.checkIndex(i); err != nil {
 		return err
 	}
 
@@ -75,18 +71,16 @@ func (l *DoubleLinkList) Insert(i int, e int) error {
 		Data: e,
 	}
 
-	if i == 1 {
-
-	}
+	// 获取第i-1个节点
 	node := l.Head
-	for j := 0; j < i; j++ {
+	for j := 0; j < i-1; j++ {
 		node = node.Next
 	}
 
-	newNode.Prev = node.Prev
-	newNode.Next = node
-	node.Prev.Next = newNode
-	node.Prev = newNode
+	newNode.Prev = node
+	newNode.Next = node.Next
+	node.Next.Prev = newNode
+	node.Next = newNode
 
 	l.Length++
 
@@ -94,6 +88,22 @@ func (l *DoubleLinkList) Insert(i int, e int) error {
 }
 
 func (l *DoubleLinkList) Delete(i int) error {
+	if err := l.checkIndex(i); err != nil {
+		return err
+	}
+
+	// 获取第i个节点
+	node := l.Head
+	for j := 0; j < i; j++ {
+		node = node.Next
+	}
+
+	node.Prev.Next = node.Next
+	node.Next.Prev = node.Prev
+
+	l.Length--
+
+	return nil
 }
 
 func (l *DoubleLinkList) checkIndex(i int) error {
