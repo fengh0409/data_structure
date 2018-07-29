@@ -13,9 +13,10 @@
 #### Insert
 在第i个节点前插入一个新的节点（假设为s）：从第一个节点开始查找，遍历链表，找到第i-1个节点（假设为p），将原本第i-1个节点的Next（也就是第i个节点，假设为q）赋给新的节点的Next，然后将新节点赋给第i个节点的Next，最后链表长度+1，这样就完成了节点的插入操作。**注意要先将p->next赋给s->next，再将s赋给p->next，顺序不能反。**
 
-s->next = p->next（s->next=q）
-
-p->next = s
+s.prev = p
+s.next = p.next
+p.next.prev = s
+p.next = s
 
 #### Delete
 删除第i个节点：找到第i-1个节点，若删除的是最后一个节点，则将第i-1个节点的Next指向nil即可；若不是最后一个节点，则将第i个节点的Next赋给第i-1个节点的Next，最后链表长度-1。
